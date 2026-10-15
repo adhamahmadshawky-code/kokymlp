@@ -138,6 +138,11 @@
             this.tone(1046, t + .25, 1.1, 'triangle', .06);
             break;
           case 'meow':    this.slide(700, 480, t, .25, 'triangle', .09); this.tone(940, t + .12, .16, 'sine', .05); break;
+          case 'jump':    this.slide(400, 860, t, .16, 'sine', .11); break;
+          case 'coin':    this.tone(1040, t, .07, 'square', .05); this.tone(1390, t + .06, .13, 'square', .05); break;
+          case 'crash':   this.noise(t, .3, .13); this.slide(520, 130, t, .36, 'sawtooth', .08); break;
+          case 'power':   [523, 659, 784, 1046].forEach((f, i) => this.tone(f, t + i * .05, .22, 'triangle', .10)); break;
+          case 'shield':  this.tone(880, t, .22, 'sine', .10); this.tone(1320, t + .05, .3, 'sine', .07); break;
         }
       } catch (e) { /* never let audio break gameplay */ }
     }

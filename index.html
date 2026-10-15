@@ -177,6 +177,13 @@
 
       </div>
 
+      <button class="game-entry" id="btn-game" type="button">
+        <span class="ge-rb" aria-hidden="true">
+          <svg viewBox="0 0 40 24"><g fill="none" stroke-linecap="round" stroke-width="4.4"><path d="M4 22a16 16 0 0 1 32 0" stroke="#ff8fb8"/><path d="M9.5 22a10.5 10.5 0 0 1 21 0" stroke="#ffd94a"/><path d="M15 22a5 5 0 0 1 10 0" stroke="#a8dcf0"/></g></svg>
+        </span>
+        <span class="ge-label">rainbow rush!</span>
+      </button>
+
       <nav class="tabbar" id="tabbar">
         <button class="tab active" data-act="party" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-1.6 2.2-4 3-4 6a3.6 3.6 0 0 0 7.2.6C15.6 7 13.6 5.6 12 3z" fill="#f7a8c9"/><path d="M12 13.5V21" stroke="#c2418f" stroke-width="1.8" stroke-linecap="round"/><path d="M5 21h14" stroke="#c2418f" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -254,6 +261,111 @@
       <button class="back-btn" id="btn-back-secret" type="button">← playground</button>
     </section>
 
+    <!-- ══════════ SCENE 5 · RAINBOW RUSH ══════════ -->
+    <section class="scene" id="scene-game" data-scene="game">
+      <canvas id="rr-canvas" aria-label="Rainbow Rush game"></canvas>
+
+      <div id="rr-hud" hidden>
+        <div class="rr-hud-row">
+          <span class="rr-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.7L12 16.8 5.9 20.3l1.5-6.7L2.2 9l6.9-.7z" fill="#ffd94a" stroke="#f0b429" stroke-width="1.6" stroke-linejoin="round"/></svg><b id="rr-score">0</b></span>
+          <span class="rr-chip gold"><span class="rr-chip-star">★</span><b id="rr-runstars">0</b></span>
+          <span class="rr-power" id="rr-power" hidden><span class="rr-power-ic" id="rr-power-ic">🌈</span><span class="rr-power-bar"><i id="rr-power-fill"></i></span></span>
+          <button class="rr-chip btn" id="rr-btn-pause" type="button" aria-label="pause">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="2" fill="#c2418f"/><rect x="13.5" y="5" width="4" height="14" rx="2" fill="#c2418f"/></svg>
+          </button>
+        </div>
+        <div class="rr-ms" id="rr-ms">
+          <span class="rr-ms-label" id="rr-ms-label">next: sweet apple acres ✦ 250</span>
+          <span class="rr-ms-bar"><i id="rr-ms-fill"></i></span>
+        </div>
+      </div>
+
+      <button id="rr-jump" hidden type="button" aria-label="jump">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v24M13 21l11-11 11 11" fill="none" stroke="#c2418f" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="rr-ov" id="ov-start" hidden>
+        <div class="rr-card">
+          <p class="rr-kicker">a pony adventure</p>
+          <h2 class="rr-title">rainbow <span>rush!</span></h2>
+          <div class="rr-stats">
+            <span class="rr-stat">best <b id="st-best">0</b></span>
+            <span class="rr-stat gold"><i>★</i> <b id="st-gstars">0</b></span>
+          </div>
+          <div class="rr-picks">
+            <button class="rr-pick" id="st-world" type="button"><span class="rr-pick-ic">🌈</span><span class="rr-pick-tx" id="st-world-name">ponyville</span></button>
+            <button class="rr-pick" id="st-char" type="button"><span class="rr-pick-pony" id="st-char-pony"></span><span class="rr-pick-tx" id="st-char-name">pinkie pie</span></button>
+          </div>
+          <button class="rr-big" id="rr-play" type="button">play!</button>
+          <div class="rr-row">
+            <button class="rr-btn" id="rr-worlds-btn" type="button">☁ worlds</button>
+            <button class="rr-btn" id="rr-chars-btn" type="button">✦ ponies</button>
+          </div>
+          <button class="rr-link" id="rr-quit" type="button">← pony world</button>
+        </div>
+      </div>
+
+      <div class="rr-ov" id="ov-worlds" hidden>
+        <div class="rr-card">
+          <p class="rr-kicker">choose a world</p>
+          <div class="rr-worlds" id="rr-worlds"></div>
+          <button class="rr-btn wide" id="rr-worlds-back" type="button">← back</button>
+        </div>
+      </div>
+
+      <div class="rr-ov" id="ov-chars" hidden>
+        <div class="rr-card">
+          <div class="rr-tabs">
+            <button class="rr-tab active" id="rr-tab-ponies" type="button">ponies</button>
+            <button class="rr-tab" id="rr-tab-closet" type="button">closet</button>
+          </div>
+          <div class="rr-grid" id="rr-chars"></div>
+          <div class="rr-grid" id="rr-closet" hidden></div>
+          <button class="rr-btn wide" id="rr-chars-back" type="button">← back</button>
+        </div>
+      </div>
+
+      <div class="rr-ov" id="ov-tutorial" hidden>
+        <div class="rr-card">
+          <p class="rr-kicker">first time?</p>
+          <ul class="rr-tips">
+            <li><span class="tip-ic">👆</span><span>tap anywhere to <b>jump</b>!</span></li>
+            <li><span class="tip-ic">⭐</span><span>collect stars &amp; cupcakes</span></li>
+            <li><span class="tip-ic">🌈</span><span>grab power-ups for magic moves</span></li>
+          </ul>
+          <button class="rr-big" id="rr-tut-go" type="button">go!</button>
+        </div>
+      </div>
+
+      <div class="rr-ov" id="ov-pause" hidden>
+        <div class="rr-card">
+          <p class="rr-kicker">taking a breather…</p>
+          <h2 class="rr-title small">paused</h2>
+          <button class="rr-big" id="rr-resume" type="button">keep playing</button>
+          <div class="rr-row">
+            <button class="rr-btn" id="rr-restart" type="button">↻ start over</button>
+            <button class="rr-btn" id="rr-home" type="button">♡ pony world</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rr-ov" id="ov-over" hidden>
+        <div class="rr-card">
+          <p class="rr-kicker" id="ov-over-kick">run over ♡</p>
+          <div class="rr-score-big" id="ov-over-score">0</div>
+          <p class="rr-over-best" id="ov-over-best">best 0</p>
+          <p class="rr-over-stars" id="ov-over-stars">★ +0 collected</p>
+          <div class="rr-news" id="ov-over-news"></div>
+          <button class="rr-big" id="rr-again" type="button">run again!</button>
+          <div class="rr-row">
+            <button class="rr-btn" id="rr-over-home" type="button">♡ pony world</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="rr-toast" role="status"></div>
+    </section>
+
   </main>
 
   <div id="fx" aria-hidden="true"></div>
@@ -272,6 +384,10 @@
 
 <script src="js/ponies.js"></script>
 <script src="js/effects.js"></script>
+<script src="js/game/data.js"></script>
+<script src="js/game/engine.js"></script>
+<script src="js/game/ui.js"></script>
+<script src="js/game/game.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

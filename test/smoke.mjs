@@ -67,9 +67,21 @@ try {
   await wait(500);
   check('garden panel active', await page.$eval('#panel-garden', el => el.classList.contains('active')));
   check('flowers + butterflies exist', await page.evaluate(() => document.querySelectorAll('#panel-garden .flower').length >= 5 && document.querySelectorAll('#panel-garden .butterfly').length === 3));
-  for (let i = 1; i <= 5; i++) { await page.tap('#flower-zone .flower:nth-child(' + i + ')').catch(() => {}); await wait(150); }
+  const noBugTap = await page.addStyleTag({ content: '.butterfly{pointer-events:none !important}' });
+  for (let t = 0; t < 16; t++) {
+    const blooms = await page.evaluate(() => document.querySelectorAll('#panel-garden .flower.bloom').length);
+    if (blooms >= 4) break;
+    const idx = await page.evaluate((n) => {
+      const fs = Array.from(document.querySelectorAll('#flower-zone .flower'));
+      const open = fs.map((f, i) => f.classList.contains('bloom') ? -1 : i).filter(i => i >= 0);
+      return open.length ? open[n % open.length] + 1 : 1;
+    }, t);
+    await page.tap('#flower-zone .flower:nth-child(' + idx + ')').catch(() => {});
+    await wait(170);
+  }
   check('flowers bloom', await page.evaluate(() => document.querySelectorAll('#panel-garden .flower.bloom').length >= 4),
     String(await page.evaluate(() => document.querySelectorAll('#panel-garden .flower.bloom').length)));
+  await noBugTap.evaluate(el => el.remove());
   await page.tap('#panel-garden .butterfly').catch(() => {});
   await wait(800);
   await page.tap('#tap-fluttershy');

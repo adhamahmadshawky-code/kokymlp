@@ -139,8 +139,10 @@
 
   KY.pony = function (name, opts) {
     const o = opts || {};
-    const c = CHARS[name] || CHARS.pinkie;
+    const base = CHARS[name] || CHARS.pinkie;
+    const c = o.colors ? Object.assign({}, base, o.colors) : base;
     const face = o.face || 'happy';
+    const gid = 'mg' + name + (o.uid ? '-' + o.uid : '');
     const cls = ['pony', 'pony-' + name].concat(o.cls ? [o.cls] : []).join(' ');
 
     const body = c.body, shade = c.shade, muzzle = c.muzzle, eye = c.eye;
@@ -151,12 +153,12 @@
       c.mane.forEach(function (col, i) {
         stops += '<stop offset="' + Math.round((i / (c.mane.length - 1)) * 100) + '%" stop-color="' + col + '"/>';
       });
-      maneDefs = '<linearGradient id="mg' + name + '" x1="0" y1="0" x2="1" y2="1">' + stops + '</linearGradient>';
+      maneDefs = '<linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1">' + stops + '</linearGradient>';
     } else {
-      maneDefs = '<linearGradient id="mg' + name + '" x1="0" y1="0" x2="0" y2="1">' +
+      maneDefs = '<linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
         '<stop offset="0" stop-color="' + c.mane + '"/><stop offset="1" stop-color="' + c.mane2 + '"/></linearGradient>';
     }
-    const Mane = 'url(#mg' + name + ')';
+    const Mane = 'url(#' + gid + ')';
 
     let tail;
     if (Array.isArray(c.mane)) {

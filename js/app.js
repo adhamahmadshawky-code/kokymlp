@@ -41,8 +41,12 @@
   const pick = function (a) { return a[(Math.random() * a.length) | 0]; };
 
   const EL = {};
-  const sceneNames = ['home', 'play', 'collection', 'secret'];
+  const sceneNames = ['home', 'play', 'collection', 'secret', 'game'];
   let currentScene = '';
+
+  /* game scene bridge — assigned here so js/game can rely on them */
+  KY.goScene = function (name) { go(name); };
+  KY.grantSiteStar = function (fromEl) { grantStar(fromEl); };
 
   /* ── sticker book ─────────────────────────────────────── */
   const STICKERS = [
@@ -110,7 +114,11 @@
       }, 700);
     }
     if (s === 6) setTimeout(function () { toast('twilight sparkle says hi ✦'); }, 500);
-    if (s === 9) { startDashing(); setTimeout(function () { toast('rainbow dash zooms by! ✦'); }, 500); }
+    if (s >= 9 && !state.once.dash) {
+      state.once.dash = true; save();
+      startDashing();
+      setTimeout(function () { toast('rainbow dash zooms by! ✦'); }, 500);
+    }
     if (s === 12) setTimeout(function () { toast('rarity sparkles in ✦'); }, 500);
     if (s >= MAX_STARS) {
       setTimeout(function () {
@@ -140,6 +148,7 @@
   function showScene(name) {
     if (sceneNames.indexOf(name) < 0) name = 'home';
     if (name === 'secret' && !(state.secret && state.stars >= 3)) name = 'play';
+    if (currentScene === 'game' && name !== 'game' && KY.game) KY.game.leave();
     currentScene = name;
     $$('.scene').forEach(function (sc) {
       sc.classList.toggle('active', sc.id === 'scene-' + name);
@@ -149,11 +158,16 @@
     if (name === 'collection') buildCollection();
     if (name === 'play') activatePanel(currentPanel, true);
     if (name === 'home') animateHomePonies();
+    if (name === 'game') {
+      if (cv.active) activatePanel('party', true);
+      if (KY.game) KY.game.enter();
+    }
     if (name === 'secret') {
       resetSecret();
       st(runSecretSequence, 450);
     }
     stopDashing();
+    if (name === 'play' && state.stars >= 9) startDashing();
     try { history.replaceState(null, '', '#' + name); } catch (e) {}
   }
 
@@ -811,7 +825,7 @@
       'panelRainbow', 'rainbowCanvas', 'starLayer', 'btnClearSky', 'hintRainbow',
       'tabbar', 'stage', 'bigBar', 'stickerGrid', 'friendsRow',
       'sceneSecret', 'secretStars', 'secretFluttershy', 'secretPinkie', 'secretGift', 'secretMsg', 'btnHug',
-      'btnBackSecret', 'btnBackPlay', 'toast', 'dashRunner', 'btnSun', 'playSky', 'pillBarFill'
+      'btnBackSecret', 'btnBackPlay', 'toast', 'dashRunner', 'btnSun', 'playSky', 'pillBarFill', 'btnGame'
     ].forEach(function (n) {
       EL[n] = document.getElementById(n.replace(/[A-Z]/g, function (m) { return '-' + m.toLowerCase(); }));
     });
@@ -896,6 +910,7 @@
 
     /* collection */
     EL.btnBackPlay.addEventListener('click', function () { go('play'); });
+    if (EL.btnGame) EL.btnGame.addEventListener('click', function () { go('game'); });
 
     /* secret */
     EL.btnHug.addEventListener('click', bigHug);
